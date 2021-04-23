@@ -280,6 +280,9 @@ typedef struct {
     // Fix "error: empty struct has size 0 in C, size 1 in C++".
     char dummy;
     #endif
+    #ifdef IARC
+    char dummy;
+    #endif
 } *mp_rom_error_text_t;
 
 #include <string.h>

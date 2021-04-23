@@ -8,6 +8,7 @@
 #include "py/gc.h"
 #include "py/mperrno.h"
 #include "lib/utils/pyexec.h"
+#include "input.h"
 
 #if MICROPY_ENABLE_COMPILER
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {
@@ -31,6 +32,29 @@ static char *stack_top;
 static char heap[2048];
 #endif
 
+void interpriter(){
+    for (;;) {
+        char *line = prompt(">>> ");
+        if (line == NULL) {
+            // EOF
+            return;
+        }
+        while (mp_repl_continue_with_input(line)) {
+            char *line2 = prompt("... ");
+            if (line2 == NULL) {
+                break;
+            }
+            char *line3 = strjoin(line, "\r\n", line2);
+            free(line);
+            free(line2);
+            line = line3;
+        }
+
+        do_str(line, MP_PARSE_FILE_INPUT);
+        free(line);
+    }
+}
+
 int main(int argc, char **argv) {
     int stack_dummy;
     stack_top = (char *)&stack_dummy;
@@ -49,10 +73,14 @@ int main(int argc, char **argv) {
         }
     }
     #else
-    pyexec_friendly_repl();
+    // pyexec_friendly_repl();
     #endif
-    // do_str("print('hello world!', list(x+1 for x in range(10)), end='eol\\n')", MP_PARSE_SINGLE_INPUT);
-    // do_str("for i in range(10):\r\n  print(i)", MP_PARSE_FILE_INPUT);
+
+    if(argc >= 2){
+        if(strcmp(argv[1],"-i") == 0)interpriter();
+        else printf("not support\n");
+    }
+ 
     #else
     pyexec_frozen_module("frozentest.py");
     #endif

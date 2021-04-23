@@ -13,7 +13,7 @@
 #define MICROPY_ALLOC_PARSE_CHUNK_INIT (16)
 #define MICROPY_COMP_CONST          (0)
 #define MICROPY_COMP_DOUBLE_TUPLE_ASSIGN (0)
-#define MICROPY_ENABLE_GC           (1)
+#define MICROPY_ENABLE_GC           (0)
 #define MICROPY_GC_ALLOC_THRESHOLD  (0)
 #define MICROPY_HELPER_REPL         (1)
 #define MICROPY_ERROR_REPORTING     (MICROPY_ERROR_REPORTING_TERSE)
@@ -42,7 +42,15 @@
 #define MICROPY_MODULE_FROZEN_MPY   (1)
 #define MICROPY_CPYTHON_COMPAT      (0)
 #define MICROPY_MODULE_GETATTR      (0)
+#define MICROPY_USE_INTERNAL_ERRNO  (1)
 
+#ifdef IARC
+#define main                        mp_main
+#define MP_LIKELY(x)                (x)
+#define MP_UNLIKELY(x)              (x)
+#define MICROPY_MIN_USE_STDOUT (1)
+#define MP_PLAT_PRINT_STRN(str, len) printf("%.*s",len,str)
+#endif
 // type definitions for the specific machine
 
 typedef intptr_t mp_int_t; // must be pointer size
@@ -56,16 +64,16 @@ typedef long mp_off_t;
 // We need to provide a declaration/definition of alloca()
 #include <alloca.h>
 
-#define MICROPY_HW_BOARD_NAME "minimal"
-#define MICROPY_HW_MCU_NAME "unknown-cpu"
+#define MICROPY_HW_BOARD_NAME "SCPZ"
+#define MICROPY_HW_MCU_NAME "rz/t1"
 
 #ifdef __linux__
 #define MICROPY_MIN_USE_STDOUT (1)
 #endif
 
 #ifdef __thumb__
-#define MICROPY_MIN_USE_CORTEX_CPU (1)
-#define MICROPY_MIN_USE_STM32_MCU (1)
+#define MICROPY_MIN_USE_CORTEX_CPU (0)
+#define MICROPY_MIN_USE_STM32_MCU (0)
 #endif
 
 #define MP_STATE_PORT MP_STATE_VM

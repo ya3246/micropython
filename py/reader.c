@@ -122,7 +122,7 @@ void mp_reader_new_file_from_fd(mp_reader_t *reader, int fd, bool close_fd) {
             close(fd);
         }
         MP_THREAD_GIL_ENTER();
-        mp_raise_OSError(errno);
+        mp_raise_OSError(0);
     }
     MP_THREAD_GIL_ENTER();
     rp->len = n;
@@ -139,7 +139,7 @@ void mp_reader_new_file(mp_reader_t *reader, const char *filename) {
     int fd = open(filename, O_RDONLY, 0644);
     MP_THREAD_GIL_ENTER();
     if (fd < 0) {
-        mp_raise_OSError(errno);
+        mp_raise_OSError(0);
     }
     mp_reader_new_file_from_fd(reader, fd, true);
 }
